@@ -172,7 +172,6 @@ public class ExchangeService implements UserDetailsService {
     public void B1B(Bankomat b1b, Integer u1u) {
         if (b1b.getU1000S() >= u1u) {
             b1b.setU1000S(b1b.getU1000S() - u1u);
-
         }
          b1b.getU1000S();
     }
