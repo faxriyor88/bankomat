@@ -57,7 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 decoded = Base64.decode(base64Token);
                String usernamepassword=new String(decoded);
                 UserDetails userDetails = exchangeService.loadUserByUsername(usernamepassword.substring(0, usernamepassword.indexOf(":")));
-                if (passwordEncoder.matches(userDetails.getPassword(), usernamepassword.substring(usernamepassword.indexOf(":") + 1))){
+                if (passwordEncoder.matches(usernamepassword.substring(usernamepassword.indexOf(":") + 1),userDetails.getPassword())){
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
              SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
            }

@@ -1,7 +1,7 @@
 package com.example.bankomat.service;
 
 import com.example.bankomat.dto.BankomatDto;
-import com.example.bankomat.dto.CardDto;
+
 import com.example.bankomat.dto.ExchangeDto;
 import com.example.bankomat.entity.*;
 import com.example.bankomat.entity.enums.Rolename;
@@ -169,60 +169,60 @@ public class ExchangeService implements UserDetailsService {
         }
     }
 
-    public Integer B1B(Bankomat b1b, Integer u1u) {
+    public void B1B(Bankomat b1b, Integer u1u) {
         if (b1b.getU1000S() >= u1u) {
             b1b.setU1000S(b1b.getU1000S() - u1u);
-            return u1u;
+
         }
-        return b1b.getU1000S();
+         b1b.getU1000S();
     }
 
-    public Integer B5B(Bankomat b5b, Integer u5u) {
+    public void B5B(Bankomat b5b, Integer u5u) {
         if (u5u >= 5) {
             if (b5b.getU5000S() >= 1) {
                 b5b.setU5000S(b5b.getU5000S() - 1);
-                return B1B(b5b, u5u - 5);
+                 B1B(b5b, u5u - 5);
             } else {
-                return B1B(b5b, u5u);
+                 B1B(b5b, u5u);
             }
         } else {
-            return B1B(b5b, u5u);
+             B1B(b5b, u5u);
         }
     }
 
-    public Integer B10B(Bankomat b10b, Integer u10u) {
+    public void B10B(Bankomat b10b, Integer u10u) {
         if (b10b.getU10000S() >= u10u) {
             b10b.setU10000S(b10b.getU10000S() - u10u);
-            return u10u;
+
         } else {
             int a = b10b.getU10000S();
             b10b.setU10000S(0);
-            return B5B(b10b, 2 * (u10u - a));
+             B5B(b10b, 2 * (u10u - a));
         }
     }
 
-    public Integer B50B(Bankomat b50b, Integer u50u) {
+    public void B50B(Bankomat b50b, Integer u50u) {
         if (u50u >= 5) {
             if (b50b.getU50000S() >= 1) {
                 b50b.setU50000S(b50b.getU50000S() - 1);
-                return B10B(b50b, u50u - 5);
+                 B10B(b50b, u50u - 5);
             } else {
-                return B10B(b50b, u50u);
+                 B10B(b50b, u50u);
             }
         } else {
-            return B10B(b50b, u50u);
+             B10B(b50b, u50u);
         }
 
     }
 
-    public Integer B100B(Bankomat b100b, Integer u100u) {
+    public void B100B(Bankomat b100b, Integer u100u) {
         if (b100b.getU100000S() >= u100u) {
             b100b.setU100000S(b100b.getU100000S() - u100u);
-            return u100u;
+
         } else {
             int a = b100b.getU100000S();
             b100b.setU100000S(0);
-            return B50B(b100b, 2 * (u100u - a));
+             B50B(b100b, 2 * (u100u - a));
         }
     }
 
