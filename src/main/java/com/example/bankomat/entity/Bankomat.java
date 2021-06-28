@@ -24,7 +24,7 @@ public class Bankomat extends AbsEntityListener {
     @ManyToOne
     private CardType cardType;
 
-    private Integer moneySizeMax=1_000_000;
+    private Integer moneySizeMax;
     private Integer moneySizeMin=1_000;
     @ManyToOne
     private Banks bankOfBankomat;
