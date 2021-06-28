@@ -100,23 +100,10 @@ public class ExchangeService implements UserDetailsService {
                                     //Mijoz kiritayotgan summa bank kupyuralariga tushishini tekshirish
                                     if (uss.endsWith("000")) {
                                         if (overallAmountUser >= 1_000_000 && overallAmountUser <= 9_999_000) {
-                                            if (Integer.parseInt(uss.substring(0, 1)) * 1000 + Integer.parseInt(uss.substring(1)) >= 1_000_000) {
-                                                for (int i = 1; i <= Integer.parseInt(uss.substring(0, 1)) + 2; i++) {
-                                                    if (i != Integer.parseInt(uss.substring(0, 1)) + 2) {
-                                                        makeExchange1(bankomat, "999000", 999_000);
-                                                    } else {
-                                                        makeExchange1(bankomat, String.valueOf(overallAmountUser - (Integer.parseInt(uss.substring(0, 1)) + 2) * 999_000), (int) (overallAmountUser - (Integer.parseInt(uss.substring(0, 1)) + 2) * 999_000));
-                                                    }
-                                                }
-                                            } else {
-                                                for (int i = 1; i <= Integer.parseInt(uss.substring(0, 1)) + 1; i++) {
-                                                    if (i != Integer.parseInt(uss.substring(0, 1)) + 1) {
-                                                        makeExchange1(bankomat, "999000", 999_000);
-                                                    } else {
-                                                        makeExchange1(bankomat, String.valueOf(overallAmountUser - (Integer.parseInt(uss.substring(0, 1)) + 1) * 999_000), (int) (overallAmountUser - (Integer.parseInt(uss.substring(0, 1)) + 1) * 999_000));
-                                                    }
-                                                }
+                                            for (int i = 1; i <= (overallAmountUser-overallAmountUser%999_000)/999_000 ; i++) {
+                                                makeExchange1(bankomat, "999000", 999_000);
                                             }
+                                            makeExchange1(bankomat,String.valueOf(overallAmountUser%999_000), (int) (overallAmountUser%999_000));
                                         } else {
                                             makeExchange1(bankomat, uss, (int) overallAmountUser);
                                         }
@@ -239,26 +226,17 @@ public class ExchangeService implements UserDetailsService {
 
     public boolean exchange(Bankomat bankomat, Integer overallamount) {
         String uss = String.valueOf(overallamount);
-        if (uss.substring(uss.length() - 3).equals("000")) {
+        if (uss.endsWith("000")) {
             if (overallamount >= 1_000_000 && overallamount <= 9_999_000) {
-                if (Integer.parseInt(uss.substring(0, 1)) * 1000 + Integer.parseInt(uss.substring(1)) >= 1_000_000) {
-                    for (int i = 1; i <= Integer.parseInt(uss.substring(0, 1)) + 2; i++) {
-                        if (i != Integer.parseInt(uss.substring(0, 1)) + 2) {
-                            makeExchange(bankomat, "999000", 999_000);
-                        } else {
-                            makeExchange(bankomat, String.valueOf(overallamount - (Integer.parseInt(uss.substring(0, 1)) + 2) * 999_000), (overallamount - (Integer.parseInt(uss.substring(0, 1)) + 2) * 999_000));
-                        }
-                    }
-                } else {
-                    for (int i = 1; i <= Integer.parseInt(uss.substring(0, 1)) + 1; i++) {
-                        if (i != Integer.parseInt(uss.substring(0, 1)) + 1) {
-                            makeExchange(bankomat, "999000", 999_000);
-                        } else {
-                            makeExchange(bankomat, String.valueOf(overallamount - (Integer.parseInt(uss.substring(0, 1)) + 1) * 999_000), (overallamount - (Integer.parseInt(uss.substring(0, 1)) + 1) * 999_000));
-                        }
-                    }
+                //Kiritilgan summani ichida nechta 999_000 bo'lsa sikl o'shancha marta aylanadi
+                for (int i = 1; i <= (overallamount-overallamount%999_000)/999_000 ; i++) {
+                    // Bu method 999_000 va 999_000 dan kichkina summani naqd qilib beradi
+                    makeExchange(bankomat, "999000", 999_000);
                 }
+                //Kiriltilgan summani 999_000 ga bo'lib, qoldiqni yana makeExchange berib yuborilyapti
+                makeExchange(bankomat,String.valueOf(overallamount%999_000),overallamount%999_000);
             } else {
+                // Bu method 999_000 va 999_000 dan kichkina summani naqd qilib beradi
                 makeExchange(bankomat, uss, overallamount);
             }
             return true;
