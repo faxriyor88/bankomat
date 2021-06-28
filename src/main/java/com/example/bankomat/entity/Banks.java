@@ -1,21 +1,20 @@
 package com.example.bankomat.entity;
 
-import com.example.bankomat.entity.enums.CardTypename;
+import com.example.bankomat.entity.enums.Bankname;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 @Entity
-public class CardType{
+public class Banks {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Enumerated(EnumType.STRING)
-    private CardTypename cardTypeName;
-
+    private Bankname bankname;
 }

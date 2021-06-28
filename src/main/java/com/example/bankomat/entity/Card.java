@@ -1,7 +1,9 @@
 package com.example.bankomat.entity;
 
+import com.example.bankomat.entity.template.AbsEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedBy;
@@ -15,20 +17,21 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Set;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Data
-public class Card implements UserDetails {
+public  class Card extends AbsEntityListener implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Size(min = 16,max = 16)
     @Column(nullable = false,unique = true)
     private String specialNumber;
-    private String bankOfCard;
+    @ManyToOne
+    private Banks bankOfCard;
     private String cvvCode;
     private String cardHoldername;
     private String cardHoldersurname;
@@ -45,10 +48,7 @@ public class Card implements UserDetails {
     private boolean enabled;
     @CreationTimestamp
     private Timestamp createdAt;
-    @CreatedBy
-    private UUID createdBy;
-    @LastModifiedBy
-    private UUID updatedBy;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

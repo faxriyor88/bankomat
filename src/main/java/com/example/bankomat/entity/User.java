@@ -1,11 +1,11 @@
 package com.example.bankomat.entity;
 
+import com.example.bankomat.entity.template.AbsEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ManyToAny;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -13,13 +13,13 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
-
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Table(name = "foydalanuvchi")
-public class User implements UserDetails {
+public class User extends AbsEntityListener implements UserDetails  {
     @Id
     @GeneratedValue
     private UUID uuid;
@@ -33,10 +33,7 @@ public class User implements UserDetails {
     @ManyToMany
     private Set<Role> roles;
     private boolean enabled;
-    @CreatedBy
-    private UUID createdBy;
-    @LastModifiedBy
-    private UUID updatedBy;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

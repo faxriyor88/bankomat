@@ -1,21 +1,22 @@
 package com.example.bankomat.entity;
 
+import com.example.bankomat.entity.template.AbsEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
+
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Entity
-public class CompletionMoneyBankomat {
+public class CompletionMoneyBankomat extends AbsEntityListener {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -31,10 +32,7 @@ public class CompletionMoneyBankomat {
     private Integer overallamount=0;
     @CreationTimestamp
     private Timestamp createdAt;
-    @CreatedBy
-    private UUID createdBy;
-    @LastModifiedBy
-    private UUID updatedBy;
+
 
     public CompletionMoneyBankomat(Bankomat bankomat, User user, Integer u1000S, Integer u5000S, Integer u10000S, Integer u50000S, Integer u100000S, Integer overallamount) {
         this.bankomat = bankomat;

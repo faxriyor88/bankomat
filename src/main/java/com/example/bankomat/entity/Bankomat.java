@@ -1,23 +1,23 @@
 package com.example.bankomat.entity;
 
+import com.example.bankomat.entity.template.AbsEntityListener;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@EntityListeners(AuditingEntityListener.class)
-public class Bankomat {
+
+public class Bankomat extends AbsEntityListener {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -26,7 +26,8 @@ public class Bankomat {
 
     private Integer moneySizeMax=1_000_000;
     private Integer moneySizeMin=1_000;
-    private String bankName="NBU";
+    @ManyToOne
+    private Banks bankOfBankomat;
     private float withdrawMoneyCommision=1;
     private float paymoneyCommision= 0.5f;
     private Integer money;
@@ -42,8 +43,5 @@ public class Bankomat {
     private User user;
     @CreationTimestamp
     private Timestamp createdAt;
-    @CreatedBy
-    private UUID createdBy;
-    @LastModifiedBy
-    private UUID updatedBy;
+
 }

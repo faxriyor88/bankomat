@@ -6,12 +6,14 @@ import com.example.bankomat.service.AuthService;
 
 import com.example.bankomat.service.ExchangeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import org.springframework.security.crypto.codec.Base64;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -32,6 +34,10 @@ public class JwtFilter extends OncePerRequestFilter {
     ExchangeService exchangeService;
     @Autowired
     CardRepository cardRepository;
+    @Autowired
+    AuthenticationManager authenticationManager;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String token=httpServletRequest.getHeader("Authorization");
@@ -51,8 +57,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 decoded = Base64.decode(base64Token);
                String usernamepassword=new String(decoded);
                 UserDetails userDetails = exchangeService.loadUserByUsername(usernamepassword.substring(0, usernamepassword.indexOf(":")));
-                if (userDetails.getPassword().equals(usernamepassword.substring(usernamepassword.indexOf(":")+1))){
-                UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                if (passwordEncoder.matches(userDetails.getPassword(), usernamepassword.substring(usernamepassword.indexOf(":") + 1))){
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
              SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
            }
             else {
