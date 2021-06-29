@@ -99,14 +99,11 @@ public class ExchangeService implements UserDetailsService {
                                     String uss = String.valueOf(overallAmountUser);
                                     //Mijoz kiritayotgan summa bank kupyuralariga tushishini tekshirish
                                     if (uss.endsWith("000")) {
-                                        if (overallAmountUser >= 1_000_000 && overallAmountUser <= 9_999_000) {
-                                            for (int i = 1; i <= (overallAmountUser-overallAmountUser%999_000)/999_000 ; i++) {
-                                                makeExchange1(bankomat, "999000", 999_000);
-                                            }
-                                            makeExchange1(bankomat,String.valueOf(overallAmountUser%999_000), (int) (overallAmountUser%999_000));
-                                        } else {
-                                            makeExchange1(bankomat, uss, (int) overallAmountUser);
-                                        }
+                                        bankomat.setU100000S(bankomat.getU100000S()-(int) (overallAmountUser - overallAmountUser % 100_000));
+                                        bankomat.setU50000S(bankomat.getU50000S()-(int) (overallAmountUser % 100_000 - (overallAmountUser % 100_000) % 50_000));
+                                        bankomat.setU10000S(bankomat.getU10000S()-(int) ((overallAmountUser % 100_000) % 50_000 - ((overallAmountUser % 100_000) % 50_000) % 10_000));
+                                        bankomat.setU5000S(bankomat.getU5000S()-(int) (((overallAmountUser % 100_000) % 50_000) % 10_000 - (((overallAmountUser % 100_000) % 50_000) % 10_000) % 5_000));
+                                        bankomat.setU1000S(bankomat.getU1000S()-(int) ((((overallAmountUser % 100_000) % 50_000) % 10_000) % 5_000));
                                         card.setCardInMoney(card.getCardInMoney() + (int) (overallAmountUser + overallAmountUser * (bankomat.getPaymoneyCommision() / 100)));
                                         cardRepository.save(card);
                                         bankomat.setMoney(bankomat.getMoney() + (int) overallAmountUser);
@@ -229,12 +226,12 @@ public class ExchangeService implements UserDetailsService {
         if (uss.endsWith("000")) {
             if (overallamount >= 1_000_000 && overallamount <= 9_999_000) {
                 //Kiritilgan summani ichida nechta 999_000 bo'lsa sikl o'shancha marta aylanadi
-                for (int i = 1; i <= (overallamount-overallamount%999_000)/999_000 ; i++) {
+                for (int i = 1; i <= (overallamount - overallamount % 999_000) / 999_000; i++) {
                     // Bu method 999_000 va 999_000 dan kichkina summani naqd qilib beradi
                     makeExchange(bankomat, "999000", 999_000);
                 }
                 //Kiriltilgan summani 999_000 ga bo'lib, qoldiqni yana makeExchange berib yuborilyapti
-                makeExchange(bankomat,String.valueOf(overallamount%999_000),overallamount%999_000);
+                makeExchange(bankomat, String.valueOf(overallamount % 999_000), overallamount % 999_000);
             } else {
                 // Bu method 999_000 va 999_000 dan kichkina summani naqd qilib beradi
                 makeExchange(bankomat, uss, overallamount);
@@ -342,47 +339,5 @@ public class ExchangeService implements UserDetailsService {
         return card.orElseThrow(() -> new UsernameNotFoundException("Bunday specialnumber topilmadi"));
     }
 
-    public void makeExchange1(Bankomat bankomat, String uss, Integer overallAmountUser) {
-        if (overallAmountUser >= 100_000) {
 
-            bankomat.setU100000S(bankomat.getU100000S() + Integer.parseInt(uss.substring(0, 1)));
-
-            if (Integer.parseInt(uss.substring(1, 2)) >= 5) {
-                bankomat.setU50000S(bankomat.getU50000S() + 1);
-                bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(1, 2)) - 5);
-            } else {
-                bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(1, 2)));
-            }
-            if (Integer.parseInt(uss.substring(2, 3)) >= 5) {
-                bankomat.setU5000S(bankomat.getU5000S() + 1);
-                bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(2, 3)) - 5);
-            } else {
-                bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(2, 3)));
-            }
-
-        } else {
-            if (overallAmountUser >= 50_000) {
-
-                if (Integer.parseInt(uss.substring(0, 1)) >= 5) {
-                    bankomat.setU50000S(bankomat.getU50000S() + 1);
-                    bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(0, 1)) - 5);
-                } else {
-                    bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(0, 1)));
-                }
-                if (Integer.parseInt(uss.substring(1, 2)) >= 5) {
-                    bankomat.setU5000S(bankomat.getU5000S() + 1);
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(1, 2)) - 5);
-                } else {
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(1, 2)));
-                }
-            } else {
-                if (Integer.parseInt(uss.substring(0, 1)) >= 5) {
-                    bankomat.setU5000S(bankomat.getU5000S() + 1);
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(0, 1)) - 5);
-                } else {
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(0, 1)));
-                }
-            }
-        }
-    }
 }
