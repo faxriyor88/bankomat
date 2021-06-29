@@ -339,47 +339,5 @@ public class ExchangeService implements UserDetailsService {
         return card.orElseThrow(() -> new UsernameNotFoundException("Bunday specialnumber topilmadi"));
     }
 
-    public void makeExchange1(Bankomat bankomat, String uss, Integer overallAmountUser) {
-        if (overallAmountUser >= 100_000) {
 
-            bankomat.setU100000S(bankomat.getU100000S() + Integer.parseInt(uss.substring(0, 1)));
-
-            if (Integer.parseInt(uss.substring(1, 2)) >= 5) {
-                bankomat.setU50000S(bankomat.getU50000S() + 1);
-                bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(1, 2)) - 5);
-            } else {
-                bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(1, 2)));
-            }
-            if (Integer.parseInt(uss.substring(2, 3)) >= 5) {
-                bankomat.setU5000S(bankomat.getU5000S() + 1);
-                bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(2, 3)) - 5);
-            } else {
-                bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(2, 3)));
-            }
-
-        } else {
-            if (overallAmountUser >= 50_000) {
-
-                if (Integer.parseInt(uss.substring(0, 1)) >= 5) {
-                    bankomat.setU50000S(bankomat.getU50000S() + 1);
-                    bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(0, 1)) - 5);
-                } else {
-                    bankomat.setU10000S(bankomat.getU10000S() + Integer.parseInt(uss.substring(0, 1)));
-                }
-                if (Integer.parseInt(uss.substring(1, 2)) >= 5) {
-                    bankomat.setU5000S(bankomat.getU5000S() + 1);
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(1, 2)) - 5);
-                } else {
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(1, 2)));
-                }
-            } else {
-                if (Integer.parseInt(uss.substring(0, 1)) >= 5) {
-                    bankomat.setU5000S(bankomat.getU5000S() + 1);
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(0, 1)) - 5);
-                } else {
-                    bankomat.setU1000S(bankomat.getU1000S() + Integer.parseInt(uss.substring(0, 1)));
-                }
-            }
-        }
-    }
 }
